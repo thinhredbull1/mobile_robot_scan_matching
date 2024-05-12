@@ -1,0 +1,8 @@
+<launch>
+<node name="lidar_port_py"  pkg="xv_11_laser_driver"  type="driver.py" output="screen">
+    <param name="port"         type="string" value="/dev/robot"/>  
+    <param name="baud"     type="int" value="57600"/>
+  </node>
+  <!-- <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser4"
+    args="0.2245 0.0 0.2 0.0 0.0  0.0 /base_footprint /laser_frame 40" /> -->
+</launch>

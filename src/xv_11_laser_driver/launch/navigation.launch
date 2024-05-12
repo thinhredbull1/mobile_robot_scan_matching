@@ -1,0 +1,32 @@
+<launch>
+
+<arg name="open_rviz" default="false"/>
+   <node name="lidar_port_py"  pkg="xv_11_laser_driver"  type="driver.py" output="screen">
+    <param name="port"         type="string" value="/dev/robot"/>  
+    <param name="baud"     type="int" value="57600"/>
+  </node>
+<!-- <param name="/use_sim_time" value="false"/> -->
+ <!-- <param name="/use_sim_time" value="true"/> -->
+<arg name="map_file" default="$(find xv_11_laser_driver)/maps/map_04.yaml"/>
+<!-- <include file="$(find xv_11_laser_driver)/launch/bringup.launch"/> -->
+
+<node pkg="map_server" name="home_map" type="map_server" args="$(arg map_file)"/>
+<!-- <include file="$(find xv_11_laser_driver)/launch/amcl.launch"/> -->
+<include file="$(find xv_11_laser_driver)/launch/gmcl.launch"/>
+<node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find xv_11_laser_driver)/cfg/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find xv_11_laser_driver)/cfg/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find xv_11_laser_driver)/cfg/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find xv_11_laser_driver)/cfg/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find xv_11_laser_driver)/cfg/dwa_local_planner_params.yaml" command="load" />
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
+    <param name="controller_frequency" value="10.0" />
+      <param name="planner_frequency" value="5.0" />
+    <!-- planner_frequency: 5.0 -->
+    <param name="controller_patience" value="15.0" />
+     <param name="shutdown_costmaps" value="false" />
+    <!-- <param name="clearing_rotation_allowed" value="false" /> xv_11_laser_driver is able to rotate in place -->
+</node>
+  </launch>
+
+
